@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Event.js documentation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+html, body {
+    font: 13px Arial;
+    margin: 0;
+    padding: 10px
+}
+
+h1, h2 {
+    margin: 0
+}
+
+h1 {
+    font-size: 18px
+}
+
+h2 {
+    font-size: 16px;
+    margin-top: 25px
+}
+
+pre {
+    border: solid 1px #C1E7FF;
+    background-color: #E8F6FF;
+    padding: 5px;
+    font-size: 12px;
+    margin: 0 0 10px 0
+}
+
+.main-wrapper {
+    width: 600px
+}
+
+.section {
+    border: solid 1px #FFBCBC;
+    background-color: #FFE8E8;
+    padding: 3px
+}
+
+.info {
+    width: 350px;
+    height: 200px;
+    overflow: auto;
+    border: solid 1px #ccc;
+    padding: 5px;
+    margin-top: 10px
+}
+</style>
+</head>
+<body>
+<div class="main-wrapper">
+<h1>Event.js</h1>
+
+<p>This Javascript package unifies event handling across browsers.<br>
+Allows registering and unregistering of event handlers.<br>
+Injects event object and involved DOM element to listener.
+</p>
+
+<h2>Registering an event</h2>
+
+<p class="section">Events can be registered using <strong>attach</strong> method:</p>
+
+<pre>
+var evt     = new Event(),
+    click   = document.getElementById('click'),
+    message = function (e, src) {
+        alert(e.type + ' event on "' + src.id + '"');
+    };
+
+evt.attach('click', click, message, false);
+</pre>
+
+<div><button id="click">Click</button></div>
+
+<p>The first parameter is event name, one of the "mousedown", "click", "mouseover" etc.</p>
+<p>The second is DOM element attached to event.</p>
+<p>The third is listener which will be executed when event will occur.<br>
+Listener receives two parameters: <strong>e</strong> (event object) and <strong>src</strong> (DOM element).
+</p>
+<p>The last parameter is boolean telling to use event capturing (true - default) or bubbling (false)</p>
+
+<p><strong>attach</strong> method returns listener, which can be used to unregister previously registered event</p>
+
+<p class="section">Multiple events:</p>
+
+<pre>
+var evt                  = new Event(),
+    multipleEvents      = document.getElementById('multiple-events'),
+    messageHTML         = function(e, src) {
+        var infoElement = document.getElementById(src.id + '-info');
+
+        infoElement.innerHTML += e.type + ' event on "' + src.id + '"\r\n';
+        infoElement.scrollTop = infoElement.scrollHeight;
+    };
+
+evt.attach('mouseover', multipleEvents, messageHTML);
+evt.attach('mouseout', multipleEvents, messageHTML);
+evt.attach('mousedown', multipleEvents, messageHTML);
+evt.attach('mouseup', multipleEvents, messageHTML);
+</pre>
+
+<div><button id="multiple-events">Multiple events</button></div>
+
+<div id="multiple-events-info" class="info"></div>
+
+<p class="section">Multiple listeners:</p>
+
+<pre>
+var evt                   = new Event(),
+    multipleListeners   = document.getElementById('multiple-listeners'),
+    messageMulti        = function(e, src, lName) {
+        var infoElement = document.getElementById(src.id + '-info');
+        infoElement.innerHTML += '&lt;div&gt;' + e.type + ' event on "'
+                                + src.id + ' with "'+ lName + '"&lt;/div&gt;';
+        infoElement.scrollTop = infoElement.scrollHeight;
+    };
+
+evt.attach('click', multipleListeners, function(e, src) {
+    messageMulti(e, src, 'listener 1')
+});
+
+evt.attach('click', multipleListeners, function(e, src) {
+    messageMulti(e, src, 'listener 2')
+});
+
+evt.attach('click', multipleListeners, function(e, src) {
+    messageMulti(e, src, 'listener 3')
+});</pre>
+
+<div><button id="multiple-listeners">Multiple listeners</button></div>
+
+<div id="multiple-listeners-info" class="info"></div>
+
+<h2>Unregistering an event</h2>
+
+<p class="section">Events can be unregistered using <strong>detach</strong> method:</p>
+
+<pre>
+var evt     = new Event(),
+    noevent = document.getElementById('no-event'),
+    message = function (e, src) {
+        alert(e.type + ' event on "' + src.id + '"');
+    };
+
+var noeventHandler = evt.attach('mousedown', noevent, message);
+evt.detach('mousedown', noevent, noeventHandler);
+</pre>
+
+<div><button id="no-event">No event</button></div>
+
+<p><strong>detach</strong> method accepts four parameters,
+first and second are event name and DOM element respectively,
+the third is listener returned by <strong>attach</strong> method,
+and the last one is capturing/bubbling boolean (which should be the same as the used in <strong>attach</strong> method)</p>
+
+<p class="section">Fire an event once:</p>
+
+<pre>
+var evt         = new Event(),
+    once        = document.getElementById('once'),
+    messageHTML = function(e, src) {
+        var infoElement = document.getElementById(src.id + '-info');
+
+        infoElement.innerHTML += e.type + ' event on "' + src.id + '"\r\n';
+        infoElement.scrollTop = infoElement.scrollHeight;
+    };
+
+var onceHandler = evt.attach('mousedown', once, function(e, src) {
+    messageHTML(e, src);
+    evt.detach('mousedown', once, onceHandler);
+});
+</pre>
+
+<div><button id="once">Run once</button></div>
+
+<div id="once-info" class="info" style="height: 50px"></div>
+
+<p>Tested in IE 6.0, FF 17, Chrome 22, Safari 5.1.1</p>
+</div>
+<script type="text/javascript" src="Event.js"></script>
+<script type="text/javascript">
+"use strict";
+var click               = document.getElementById('click'),
+    multipleEvents      = document.getElementById('multiple-events'),
+    multipleListeners   = document.getElementById('multiple-listeners'),
+    noevent             = document.getElementById('no-event'),
+    evt                 = new Event(),
+    message             = function(e, src) {
+        alert(e.type + ' event on "' + src.id + '"');
+    },
+    messageHTML         = function(e, src) {
+        var infoElement = document.getElementById(src.id + '-info');
+        infoElement.innerHTML += '<div>' + e.type + ' event on "' + src.id + '"</div>';
+        infoElement.scrollTop = infoElement.scrollHeight;
+    },
+    messageMulti        = function(e, src, lName) {
+        var infoElement = document.getElementById(src.id + '-info');
+        infoElement.innerHTML += '<div>' + e.type + ' event on "'
+                                + src.id + ' with "'+ lName + '"</div>';
+        infoElement.scrollTop = infoElement.scrollHeight;
+    };
+
+evt.attach('click', document.getElementById('click'), message, false);
+
+evt.attach('mouseover', multipleEvents, messageHTML);
+evt.attach('mouseout', multipleEvents, messageHTML);
+evt.attach('mousedown', multipleEvents, messageHTML);
+evt.attach('mouseup', multipleEvents, messageHTML);
+
+var noeventHandler = evt.attach('mousedown', noevent, message);
+evt.detach('mousedown', noevent, noeventHandler);
+
+var onceHandler = evt.attach('mousedown', once, function(e, src) {
+    messageHTML(e, src);
+    evt.detach('mousedown', once, onceHandler);
+});
+
+evt.attach('click', multipleListeners, function(e, src) {
+    messageMulti(e, src, 'listener 1')
+});
+
+evt.attach('click', multipleListeners, function(e, src) {
+    messageMulti(e, src, 'listener 2')
+});
+
+evt.attach('click', multipleListeners, function(e, src) {
+    messageMulti(e, src, 'listener 3')
+});
+</script>
+</body>
+</html>

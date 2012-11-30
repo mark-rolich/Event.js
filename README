@@ -1,0 +1,6 @@
+This Javascript package unifies event handling across browsers
+
+- Allows registering and unregistering of event handlers
+- Injects event object and involved DOM element to listener
+
+Copyright (C) 2012  Mark Rolich
