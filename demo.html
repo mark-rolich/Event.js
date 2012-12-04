@@ -69,7 +69,7 @@ Injects event object and involved DOM element to listener.
 var evt     = new Event(),
     click   = document.getElementById('click'),
     message = function (e, src) {
-        alert(e.type + ' event on "' + src.id + '"');
+        window.alert(e.type + ' event on "' + src.id + '"');
     };
 
 evt.attach('click', click, message, false);
@@ -89,9 +89,9 @@ Listener receives two parameters: <strong>e</strong> (event object) and <strong>
 <p class="section">Multiple events:</p>
 
 <pre>
-var evt                  = new Event(),
+var evt                 = new Event(),
     multipleEvents      = document.getElementById('multiple-events'),
-    messageHTML         = function(e, src) {
+    messageHTML         = function (e, src) {
         var infoElement = document.getElementById(src.id + '-info');
 
         infoElement.innerHTML += e.type + ' event on "' + src.id + '"\r\n';
@@ -111,25 +111,25 @@ evt.attach('mouseup', multipleEvents, messageHTML);
 <p class="section">Multiple listeners:</p>
 
 <pre>
-var evt                   = new Event(),
+var evt                 = new Event(),
     multipleListeners   = document.getElementById('multiple-listeners'),
-    messageMulti        = function(e, src, lName) {
+    messageMulti        = function (e, src, lName) {
         var infoElement = document.getElementById(src.id + '-info');
         infoElement.innerHTML += '&lt;div&gt;' + e.type + ' event on "'
-                                + src.id + ' with "'+ lName + '"&lt;/div&gt;';
+                                + src.id + ' with "' + lName + '"&lt;/div&gt;';
         infoElement.scrollTop = infoElement.scrollHeight;
     };
 
-evt.attach('click', multipleListeners, function(e, src) {
-    messageMulti(e, src, 'listener 1')
+evt.attach('click', multipleListeners, function (e, src) {
+    messageMulti(e, src, 'listener 1');
 });
 
-evt.attach('click', multipleListeners, function(e, src) {
-    messageMulti(e, src, 'listener 2')
+evt.attach('click', multipleListeners, function (e, src) {
+    messageMulti(e, src, 'listener 2');
 });
 
-evt.attach('click', multipleListeners, function(e, src) {
-    messageMulti(e, src, 'listener 3')
+evt.attach('click', multipleListeners, function (e, src) {
+    messageMulti(e, src, 'listener 3');
 });</pre>
 
 <div><button id="multiple-listeners">Multiple listeners</button></div>
@@ -144,7 +144,7 @@ evt.attach('click', multipleListeners, function(e, src) {
 var evt     = new Event(),
     noevent = document.getElementById('no-event'),
     message = function (e, src) {
-        alert(e.type + ' event on "' + src.id + '"');
+        window.alert(e.type + ' event on "' + src.id + '"');
     };
 
 var noeventHandler = evt.attach('mousedown', noevent, message);
@@ -163,14 +163,14 @@ and the last one is capturing/bubbling boolean (which should be the same as the 
 <pre>
 var evt         = new Event(),
     once        = document.getElementById('once'),
-    messageHTML = function(e, src) {
+    messageHTML = function (e, src) {
         var infoElement = document.getElementById(src.id + '-info');
 
         infoElement.innerHTML += e.type + ' event on "' + src.id + '"\r\n';
         infoElement.scrollTop = infoElement.scrollHeight;
     };
 
-var onceHandler = evt.attach('mousedown', once, function(e, src) {
+var onceHandler = evt.attach('mousedown', once, function (e, src) {
     messageHTML(e, src);
     evt.detach('mousedown', once, onceHandler);
 });
@@ -179,6 +179,21 @@ var onceHandler = evt.attach('mousedown', once, function(e, src) {
 <div><button id="once">Run once</button></div>
 
 <div id="once-info" class="info" style="height: 50px"></div>
+
+<h2>Preventing an event</h2>
+
+<p class="section">Default events can be prevented using <strong>prevent</strong> method:</p>
+
+<pre>
+var evt     = new Event(),
+    input   = document.getElementById('prevent-click');
+
+evt.attach('keypress', input, function (e) {
+    evt.prevent(e);
+});
+</pre>
+
+<div><input type="text" id="prevent-click"></div>
 
 <p>Tested in IE 6.0, FF 17, Chrome 22, Safari 5.1.1</p>
 </div>
@@ -189,19 +204,21 @@ var click               = document.getElementById('click'),
     multipleEvents      = document.getElementById('multiple-events'),
     multipleListeners   = document.getElementById('multiple-listeners'),
     noevent             = document.getElementById('no-event'),
+    input               = document.getElementById('prevent-click'),
+    once                = document.getElementById('once'),
     evt                 = new Event(),
-    message             = function(e, src) {
-        alert(e.type + ' event on "' + src.id + '"');
+    message             = function (e, src) {
+        window.alert(e.type + ' event on "' + src.id + '"');
     },
-    messageHTML         = function(e, src) {
+    messageHTML         = function (e, src) {
         var infoElement = document.getElementById(src.id + '-info');
         infoElement.innerHTML += '<div>' + e.type + ' event on "' + src.id + '"</div>';
         infoElement.scrollTop = infoElement.scrollHeight;
     },
-    messageMulti        = function(e, src, lName) {
+    messageMulti        = function (e, src, lName) {
         var infoElement = document.getElementById(src.id + '-info');
         infoElement.innerHTML += '<div>' + e.type + ' event on "'
-                                + src.id + ' with "'+ lName + '"</div>';
+                                + src.id + ' with "' + lName + '"</div>';
         infoElement.scrollTop = infoElement.scrollHeight;
     };
 
@@ -215,21 +232,25 @@ evt.attach('mouseup', multipleEvents, messageHTML);
 var noeventHandler = evt.attach('mousedown', noevent, message);
 evt.detach('mousedown', noevent, noeventHandler);
 
-var onceHandler = evt.attach('mousedown', once, function(e, src) {
+var onceHandler = evt.attach('mousedown', once, function (e, src) {
     messageHTML(e, src);
     evt.detach('mousedown', once, onceHandler);
 });
 
-evt.attach('click', multipleListeners, function(e, src) {
-    messageMulti(e, src, 'listener 1')
+evt.attach('click', multipleListeners, function (e, src) {
+    messageMulti(e, src, 'listener 1');
 });
 
-evt.attach('click', multipleListeners, function(e, src) {
-    messageMulti(e, src, 'listener 2')
+evt.attach('click', multipleListeners, function (e, src) {
+    messageMulti(e, src, 'listener 2');
 });
 
-evt.attach('click', multipleListeners, function(e, src) {
-    messageMulti(e, src, 'listener 3')
+evt.attach('click', multipleListeners, function (e, src) {
+    messageMulti(e, src, 'listener 3');
+});
+
+evt.attach('keypress', input, function (e) {
+    evt.prevent(e);
 });
 </script>
 </body>

@@ -55,4 +55,12 @@ var Event = function () {
             element.removeEventListener(evt, listener, useCapture);
         }
     };
+
+    this.prevent = function (evt) {
+        if (evt.preventDefault) {
+            evt.preventDefault();
+        } else {
+            evt.returnValue = false;
+        }
+    };
 };
