@@ -50,6 +50,14 @@ pre {
     padding: 5px;
     margin-top: 10px
 }
+
+#upper {
+    border: solid 1px green
+}
+
+#lower {
+    border: solid 1px red
+}
 </style>
 </head>
 <body>
@@ -195,6 +203,25 @@ evt.attach('keypress', input, function (e) {
 
 <div><input type="text" id="prevent-click"></div>
 
+<h2>Turning off event capturing and bubbling</h2>
+
+<p class="section">Event capturing and bubbling can be turned off using <strong>stop</strong> method:</p>
+
+<pre>
+var evt     = new Event(),
+    upper   = document.getElementById('upper'),
+    lower   = document.getElementById('lower');
+
+evt.attach('mousedown', upper, function (e, src) {
+    evt.stop(e);
+    alert(src.id);
+});
+</pre>
+
+<div id="upper">Upper
+    <div id="lower">Lower</div>
+</div>
+
 <p>Tested in IE 6.0, FF 17, Chrome 22, Safari 5.1.1</p>
 </div>
 <script type="text/javascript" src="Event.js"></script>
@@ -206,6 +233,8 @@ var click               = document.getElementById('click'),
     noevent             = document.getElementById('no-event'),
     input               = document.getElementById('prevent-click'),
     once                = document.getElementById('once'),
+    upper               = document.getElementById('upper'),
+    lower               = document.getElementById('lower'),
     evt                 = new Event(),
     message             = function (e, src) {
         window.alert(e.type + ' event on "' + src.id + '"');
@@ -251,6 +280,11 @@ evt.attach('click', multipleListeners, function (e, src) {
 
 evt.attach('keypress', input, function (e) {
     evt.prevent(e);
+});
+
+evt.attach('mousedown', upper, function (e, src) {
+    evt.stop(e);
+    alert(src.id);
 });
 </script>
 </body>

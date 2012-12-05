@@ -31,14 +31,6 @@ var Event = function () {
             var e   = ev || event,
                 src = e.srcElement || e.target;
 
-            if (useCapture) {
-                e.cancelBubble = true;
-
-                if (e.stopPropagation) {
-                    e.stopPropagation();
-                }
-            }
-
             listener(e, src);
         }, useCapture]);
     };
@@ -53,6 +45,14 @@ var Event = function () {
         } else {
             evt = evtName;
             element.removeEventListener(evt, listener, useCapture);
+        }
+    };
+
+    this.stop = function (evt) {
+        evt.cancelBubble = true;
+
+        if (evt.stopPropagation) {
+            evt.stopPropagation();
         }
     };
 
