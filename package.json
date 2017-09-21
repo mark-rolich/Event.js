@@ -1,0 +1,19 @@
+{
+  "name": "Event.js",
+  "version": "1.0.0",
+  "description": "Unifies event handling across browsers",
+  "main": "Event.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/mark-rolich/Event.js.git"
+  },
+  "keywords": [
+    "event"
+  ],
+  "author": "Mark Rolich",
+  "license": "MIT",
+  "dependencies": {}
+}
